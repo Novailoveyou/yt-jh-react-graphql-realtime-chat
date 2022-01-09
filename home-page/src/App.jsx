@@ -7,6 +7,8 @@ import 'shards-ui/dist/css/shards.min.css'
 
 import './index.css'
 
+import Chat from 'chat/Chat'
+
 const App = () => (
   <Container>
     <p>
@@ -17,7 +19,7 @@ const App = () => (
       laborum harum ad tenetur voluptates id ullam? A, amet asperiores.
     </p>
     <h1>Chat!</h1>
-    <div>Chat window here</div>
+    <Chat />
     <p>
       Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nobis aliquam
       quisquam non suscipit voluptatibus ex quasi vero dolore saepe ullam!

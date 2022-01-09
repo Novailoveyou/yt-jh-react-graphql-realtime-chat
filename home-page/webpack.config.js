@@ -41,20 +41,13 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'home',
+      library: { type: 'var', name: 'home' },
       filename: 'remoteEntry.js',
-      remotes: {},
+      remotes: {
+        chat: 'chat'
+      },
       exposes: {},
-      shared: {
-        ...deps,
-        react: {
-          singleton: true,
-          requiredVersion: deps.react
-        },
-        'react-dom': {
-          singleton: true,
-          requiredVersion: deps['react-dom']
-        }
-      }
+      shared: require('./package.json').dependencies
     }),
     new HtmlWebPackPlugin({
       template: './src/index.html'
