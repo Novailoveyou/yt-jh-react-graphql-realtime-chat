@@ -4,6 +4,7 @@ import {
   InMemoryCache,
   ApolloProvider,
   useQuery,
+  useMutation,
   gql
 } from '@apollo/client'
 import { Container, Row, Col, FormInput, Button } from 'shards-react'
@@ -20,6 +21,12 @@ const GET_MESSAGES = gql`
       content
       user
     }
+  }
+`
+
+const POST_MESSAGE = gql`
+  mutation PostMessage($user: String!, $content: String!) {
+    postMessage(user: $user, content: $content)
   }
 `
 
@@ -73,8 +80,12 @@ const Chat = () => {
     user: 'Jack',
     content: ''
   })
+  const [postMessage] = useMutation(POST_MESSAGE)
   const onSend = () => {
     if (state.content.length > 0) {
+      postMessage({
+        variables: state
+      })
     }
     setState({
       ...state,
@@ -82,37 +93,37 @@ const Chat = () => {
     })
   }
   return (
-    <ApolloProvider client={client}>
-      <Container>
-        <Messages user={state.user} />
-        <Row>
-          <Col xs={2} style={{ padding: 0 }}>
-            <FormInput
-              label='User'
-              value={state.user}
-              onChange={evt => setState({ ...state, user: evt.target.value })}
-            />
-          </Col>
-          <Col xs={8}>
-            <FormInput
-              label='User'
-              value={state.content}
-              onChange={evt =>
-                setState({ ...state, content: evt.target.value })
+    <Container>
+      <Messages user={state.user} />
+      <Row>
+        <Col xs={2} style={{ padding: 0 }}>
+          <FormInput
+            label='User'
+            value={state.user}
+            onChange={evt => setState({ ...state, user: evt.target.value })}
+          />
+        </Col>
+        <Col xs={8}>
+          <FormInput
+            label='User'
+            value={state.content}
+            onChange={evt => setState({ ...state, content: evt.target.value })}
+            onKeyUp={evt => {
+              // if enter is pressed
+              if (evt.keyCode === 13) {
+                onSend()
               }
-              onKeyUp={evt => {
-                // if enter is pressed
-                if (evt.keyCode === 13) {
-                  onSend()
-                }
-              }}
-            />
-          </Col>
-          <Button onClick={() => onSend()}>Send</Button>
-        </Row>
-      </Container>
-    </ApolloProvider>
+            }}
+          />
+        </Col>
+        <Button onClick={() => onSend()}>Send</Button>
+      </Row>
+    </Container>
   )
 }
 
-export default Chat
+export default () => (
+  <ApolloProvider client={client}>
+    <Chat />
+  </ApolloProvider>
+)
